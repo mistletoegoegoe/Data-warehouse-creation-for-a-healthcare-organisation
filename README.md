@@ -53,6 +53,37 @@ In the previous section, reports to support objectives of North and West Yorkshi
 |                    | AVG_occupied_bed     | Real      | Non key     | Records average occupied beds                  |
 |                    | AVG_occupancy_rate   | Real      | Non key     | Records bed occupancy rate                     |
 |                    | AVG_waiting_time_WYR | Real      | Non key     | Records average waiting time in WYR home cares |
+
+#### Data dictionary for each table: 
+
+Time_dim table:
+
+
+<img width="721" alt="image" src="https://github.com/user-attachments/assets/d20caf50-44b4-4135-baa0-1282e848b418">
+
+
+Care_centre_Dim table:
+
+
+<img width="720" alt="image" src="https://github.com/user-attachments/assets/0c761a07-ce7e-4032-8240-7e53a929f4a1">
+
+
+Ward_Dim table:
+
+
+<img width="721" alt="image" src="https://github.com/user-attachments/assets/fecf0a53-701d-4b14-a0b8-09b2bdc7ab7e">
+
+
+Bed_occupancy_Fact table:
+
+
+<img width="719" alt="image" src="https://github.com/user-attachments/assets/911f5e80-8245-4d1b-8a88-aae490c289c4">
+
+
+
+
+
+
 ### 5. Extract, Transform and Load process
 ## II. Star schema implementation
 ### 1. Star schema implementation
