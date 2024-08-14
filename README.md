@@ -7,7 +7,10 @@ Due to the case study, some requirements and characteristics of integrated data 
 -	Centralised data system works with data from many sources 
 -	The dataset of care homes and social services care grows minutes by minutes due to the increasing in the number and information of patients, thus, this dataset is very huge
 -	The durability of data system is important, as this is a long-term project which will last many years and update continuously. 
-### 2. Identify stakeholders, KPI and reports
+### 2. Identify stakeholders, main objective and reports
+From the objective of the data system that needs to be built, many objectives and related stakeholders can be chosen to deliver information and insights. However, this project focuses on:  
+-	Objective: Bed occupancy assessment
+-	Stakeholder: Care home managers
 ### 3. Star schema and data dictionary
 ### 4. Extract, Transform and Load process
 ## II. Star schema implementation
