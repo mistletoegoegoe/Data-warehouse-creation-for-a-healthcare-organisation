@@ -28,6 +28,31 @@ The tables care_home, ward, time (dimension tables) will connect with one center
 To build this data warehouse, the data is organized in some concepts: star schema, snowflake schema, and fact constellations (Karmani, 2020). All types of schemas can generate required reports. Although, snowflake and fact constellations schema can eliminate data redundancy which may happen in star schema, they are far more complex in query and time execution as well as the size of data warehouse (Karmani, 2020). Thus, star scheme might be a reasonable pick. 
 
 ### 4. Star schema and data dictionary
+In the previous section, reports to support objectives of North and West Yorkshire CCG are identified. From those, star schema is designed with dimensions (time, ward, care home) and a fact table. Details of them are shown in tables below: 
+
+![image](https://github.com/user-attachments/assets/49974130-7252-4748-878a-51f563e69925)
+
+#### Dimension tables:
+| Table name  | Attribute name    | Data type    |
+|-------------|-------------------|--------------|
+| Time        | Time_id           | Int (PK)     |
+|             | Year              | Int          |
+|             | Month             | Int          |
+| Care_centre | Care_centre_id_sq | Int (PK)     |
+|             | Care_centre_name  | Varchar (50) |
+| Ward        | Ward_id_sq        | Int (PK)     |
+|             | Ward_name         | Varchar (50) |
+#### Fact table:
+| Table Name         | Attribute Name       | Data Type | Keys        | Measure                                        |
+|--------------------|----------------------|-----------|-------------|------------------------------------------------|
+| Bed_occupancy_FACT | Serial_no            | Int       | Primary Key | Unique serial number                           |
+|                    | Time_id              | Int       | Foreign Key | Refers to Time table                           |
+|                    | Care_centre_id_sq    | Int       | Foreign Key | Refers to Care_centre table                    |
+|                    | Ward_id_sq           | Int       | Foreign Key | Refers to Ward table                           |
+|                    | AVG_available_bed    | Real      | Non key     | Records average available beds                 |
+|                    | AVG_occupied_bed     | Real      | Non key     | Records average occupied beds                  |
+|                    | AVG_occupancy_rate   | Real      | Non key     | Records bed occupancy rate                     |
+|                    | AVG_waiting_time_WYR | Real      | Non key     | Records average waiting time in WYR home cares |
 ### 5. Extract, Transform and Load process
 ## II. Star schema implementation
 ### 1. Star schema implementation
