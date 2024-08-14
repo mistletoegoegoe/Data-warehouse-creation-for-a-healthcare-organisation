@@ -33,26 +33,13 @@ In the previous section, reports to support objectives of North and West Yorkshi
 ![image](https://github.com/user-attachments/assets/49974130-7252-4748-878a-51f563e69925)
 
 #### Dimension tables:
-| Table name  | Attribute name    | Data type    |
-|-------------|-------------------|--------------|
-| Time        | Time_id           | Int (PK)     |
-|             | Year              | Int          |
-|             | Month             | Int          |
-| Care_centre | Care_centre_id_sq | Int (PK)     |
-|             | Care_centre_name  | Varchar (50) |
-| Ward        | Ward_id_sq        | Int (PK)     |
-|             | Ward_name         | Varchar (50) |
+
+<img width="307" alt="image" src="https://github.com/user-attachments/assets/4e6fdac1-dd31-44fd-a45b-5dfea48aa508">
+
+
 #### Fact table:
-| Table Name         | Attribute Name       | Data Type | Keys        | Measure                                        |
-|--------------------|----------------------|-----------|-------------|------------------------------------------------|
-| Bed_occupancy_FACT | Serial_no            | Int       | Primary Key | Unique serial number                           |
-|                    | Time_id              | Int       | Foreign Key | Refers to Time table                           |
-|                    | Care_centre_id_sq    | Int       | Foreign Key | Refers to Care_centre table                    |
-|                    | Ward_id_sq           | Int       | Foreign Key | Refers to Ward table                           |
-|                    | AVG_available_bed    | Real      | Non key     | Records average available beds                 |
-|                    | AVG_occupied_bed     | Real      | Non key     | Records average occupied beds                  |
-|                    | AVG_occupancy_rate   | Real      | Non key     | Records bed occupancy rate                     |
-|                    | AVG_waiting_time_WYR | Real      | Non key     | Records average waiting time in WYR home cares |
+
+<img width="527" alt="image" src="https://github.com/user-attachments/assets/64f8d5bf-2f19-4588-a5bb-ecf7b22ded29">
 
 #### Data dictionary for each table: 
 
