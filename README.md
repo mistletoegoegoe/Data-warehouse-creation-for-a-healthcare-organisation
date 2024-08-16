@@ -224,8 +224,73 @@ END;
   FROM Time_view;
 
   ```
-
   
 - Ward_dim table:
+  Surrogate key: 
+
+  The Ward_dim table is extracted from the NYR_ward table and WYR_Ward table. For these two sources, primary key for each table has the same format and value. As a result, when combining them into the dimension table, the primary keys are repeated, thus they cannot be used as identifiers. That means it is mandatory to create a new identifier.
+
+  In this case, the sequence (Ward_sequence) is implemented as a surrogate key to do that.
+
+  ```
+  DROP SEQUENCE Ward_sequence;
+  CREATE SEQUENCE Ward_sequence
+  MINVALUE 1
+  MAXVALUE 1000000
+  START WITH 1
+  INCREMENT BY 1;
+  ```
+  To populate the Ward_dim table, one temporary table is created which is SCD_WARD_STAGEAREA. It is to store the union data from NYR_ward and WYR_ward (ward_id, ward_name, care_centre_id, update_date).
+
+  Then this temporary table merges into the ward_dim which is created previously via QSEE Star Schema. The purpose of this step is to integrate the SCD into the table by checking when the new record is updated, it is actually the totally new one or an update of an original record. If it is a new record, do the insert statement as normal, unless create new row as an update of an old record (including the effective date in the new row and end date in the original row).
+
+  To populate Ward_dim table, merge into statement is used to merge the updated or inserted records from source table to ward_dim (target table). However, for the When matched clause, it only can either update or insert the changed record in source tables, and it is necessary to combine both of them in this case. Thus, a trigger is implemented to automatically insert the updated record into Ward_dim table after updating that by using merge into statement.
+
+  ```
+  -- 4.2 Ward_dim with SCD
+  -- Creating stage area table to union data from NYR_ward and WYR_ward
+
+  DROP TABLE SCD_WARD_STAGEAREA;
+  CREATE TABLE SCD_WARD_STAGEAREA (ward_id, care_centre_id, prf_ward_name, update_date) AS
+        SELECT
+                ward_id, 
+                care_centre_id, 
+                prf_ward_name, 
+                sysdate AS update_date
+    FROM (
+        SELECT ward_id,  'N' || care_centre_id AS care_centre_id, prf_ward_name
+    FROM NYR_WARD
+        UNION
+        SELECT ward_no,  'W' || care_id AS care_centre_id, prf_ward_name
+    FROM WYR_WARD
+    );
+
+  -- Merge statement to merge data from source table (SCD_Ward_Stagearea) into target table (Ward_dim) => only update End_date in this step
+  
+  MERGE INTO WARD_DIM w
+  USING SCD_WARD_STAGEAREA ws
+  ON (w.ward_id = ws.ward_id and w.care_centre_id=ws.care_centre_id and w.ward_name !=ws.prf_ward_name)
+  WHEN NOT MATCHED THEN
+    INSERT (ward_id_SQ, WARD_ID, care_centre_id, ward_name, effective_date, end_date)
+    VALUES (Ward_sequence.nextval, ws.ward_ID, ws.care_centre_id, ws.prf_ward_name, ws.update_date, NULL)
+  WHEN MATCHED THEN
+    UPDATE SET
+      w.end_date = ws.update_date
+      WHERE  w.ward_name != ws.prf_ward_name ;
+  - Trigger to automatically insert new record into Ward_dim after updating in Staging area table => Insert updated record in this step
+
+  DROP TRIGGER Insert_Ward_Dim_After_SCD;
+  CREATE TRIGGER Insert_Ward_Dim_After_SCD
+  AFTER UPDATE OR INSERT OR DELETE ON SCD_Ward_stagearea
+  FOR EACH ROW
+  BEGIN
+        IF :new.prf_ward_name != :old.prf_ward_name THEN
+                INSERT INTO WARD_DIM (ward_id_SQ, WARD_ID, care_centre_id, ward_name, effective_date, end_date)
+                VALUES (Ward_sequence.nextval, :new.ward_ID, :new.care_centre_id, :new.prf_ward_name,:new.UPDATE_DATE,  null);
+        end if;
+  end;
+  /
+  ```
+
 - Care_centre_dim table:
 - Bed_occupancy_fact table:
