@@ -30,16 +30,7 @@ To build this data warehouse, the data is organized in some concepts: star schem
 ### 4. Star schema and data dictionary
 In the previous section, reports to support objectives of North and West Yorkshire CCG are identified. From those, star schema is designed with dimensions (time, ward, care home) and a fact table. Details of them are shown in tables below: 
 
-![image](https://github.com/user-attachments/assets/49974130-7252-4748-878a-51f563e69925)
-
-#### Dimension tables:
-
-<img width="307" alt="image" src="https://github.com/user-attachments/assets/4e6fdac1-dd31-44fd-a45b-5dfea48aa508">
-
-
-#### Fact table:
-
-<img width="527" alt="image" src="https://github.com/user-attachments/assets/64f8d5bf-2f19-4588-a5bb-ecf7b22ded29">
+![image](https://github.com/user-attachments/assets/9149d9ff-2a57-4e98-befe-6f0be711cb02)
 
 #### Data dictionary for each table: 
 
@@ -74,12 +65,6 @@ To deal perfectly with this issue, the process of Extract, transform and load (E
 
 <img width="626" alt="image" src="https://github.com/user-attachments/assets/69f7d334-5321-411e-aebe-d24759a911ed">
 
-The whole detailed process are demonstrated in the table below:
-<img width="704" alt="image" src="https://github.com/user-attachments/assets/5bc1a2dc-1931-4e09-913a-c7fc6184cfda">
-
-<img width="703" alt="image" src="https://github.com/user-attachments/assets/89e6c56e-0c77-451c-9160-59bc981d7802">
-
-<img width="704" alt="image" src="https://github.com/user-attachments/assets/76460c8a-af05-49a5-a49f-60506f21a47d">
 
 ## II. Star schema implementation
 ### 1. Star schema implementation
