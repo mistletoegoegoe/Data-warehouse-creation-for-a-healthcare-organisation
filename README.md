@@ -43,7 +43,7 @@ Moreover, applying the SCD type 2 may require more than one row for a subject su
 Thus, it is necessary to have a surrogate key after combining these two datasets in one and implement the SCD.  The reason for Ward_dim table is similar to Care_Centre_dim. 
 
 
-#### Data dictionary for each table: 
+**- Data dictionary for each table:**
 
 Time_dim table:
 
