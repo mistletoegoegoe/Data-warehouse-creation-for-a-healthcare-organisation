@@ -7,7 +7,28 @@ Due to the case study, some requirements and characteristics of integrated data 
 -	Centralised data system works with data from many sources 
 -	The dataset of care homes and social services care grows minutes by minutes due to the increasing in the number and information of patients, thus, this dataset is very huge
 -	The durability of data system is important, as this is a long-term project which will last many years and update continuously.
-  
+
+The dataset includes the tables below: 
+a. For North Yorkshire
+- NYR_PATIENT
+- NYR_CARE_CENTRE
+- NYR_WARD
+- NYR_BED
+- NYR_STAFF
+- NYR_ADMISSION
+
+b. For West Yorkshire
+- WYR_Employee
+- WYR_Doctor
+- WYR_Nurse
+- WYR_Patient
+- WYR_Reservation
+- WYR_BedOccupancy
+- WYR_CARE_CENTRE
+- WYR_WARD
+- WYR_BedAssigned
+- WYR_Bed
+
 ### 2. Identify stakeholders, main objective and reports
 From the objective of the data system that needs to be built, many objectives and related stakeholders can be chosen to deliver information and insights. However, this project focuses on:  
 -	**Objective**: Bed occupancy assessment
