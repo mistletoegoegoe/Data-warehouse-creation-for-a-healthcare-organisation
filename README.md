@@ -150,11 +150,14 @@ ALTER TABLE Bed_occupancy_Fact ADD CONSTRAINT fk3_Bed_occupancy_Fact_to_Care_cen
 #### a. Data cleaning and transforming
 In the datasets, there are some issues that may implement the data pre-processing to clean it: 
 
+- Data issues and transformation:
+
 <img width="521" alt="image" src="https://github.com/user-attachments/assets/b7929ee1-bc8e-4397-8068-0e29c77e53be">
 
 <img width="519" alt="image" src="https://github.com/user-attachments/assets/9b122298-c5d3-45f8-b894-5ea11ff3ccef">
 
 <img width="518" alt="image" src="https://github.com/user-attachments/assets/86ee6ec0-fe95-4be4-83fb-9826d33c6271">
 
+- Error 
 
 #### b. Data loading into star schema (integrating Slow changing dimension type 2)
