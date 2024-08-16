@@ -158,6 +158,74 @@ In the datasets, there are some issues that may implement the data pre-processin
 
 <img width="518" alt="image" src="https://github.com/user-attachments/assets/86ee6ec0-fe95-4be4-83fb-9826d33c6271">
 
-- Error 
+- Error log table
+
+  This table is implemented by trigger to record any changes that were made in the raw data. The code below is to create a table which stores the essential information about the errors that data is facing and the trigger to automatically insert into that table whenever any changes are applied into the dataset to fix the errors.
+```
+DROP TABLE Log_table CASCADE CONSTRAINTS;
+CREATE TABLE Log_table 
+(issue_no NUMBER(10) NOT NULL, 
+table_name VARCHAR2(25),
+issue_code NUMBER(5),
+issue_desc VARCHAR2(100),
+issue_date DATE, 
+issue_status VARCHAR2(25),
+update_date DATE);
+
+--Trigger on WYR_Reservation to record any changes and insert into log_table
+CREATE OR REPLACE TRIGGER check_quality_trigg
+AFTER INSERT OR UPDATE OR DELETE ON WYR_Reservation
+FOR EACH ROW
+DECLARE
+    error_code NUMBER;
+BEGIN
+        IF INSERTING THEN
+        error_code := 0; 
+    ELSIF DELETING THEN
+        error_code := 1; 
+    ELSIF UPDATING THEN
+        error_code := 2;   
+    END IF;
+  INSERT INTO Log_table
+  (issue_no, table_name, issue_code,  issue_desc,  issue_date, issue_status, update_date)
+   VALUES
+  (Quality_sequence.nextval, 'WYR_Reservation', error_code, 'Checking quality', SYSDATE, 'Done', SYSDATE);
+END;
+/
+```
 
 #### b. Data loading into star schema (integrating Slow changing dimension type 2)
+- Time_dim table:
+  ```
+  --- Primary key is generated from a sequence (time_id) which plays the role of identifier among the records in the table ---
+  DROP SEQUENCE Time_sequence;
+  CREATE SEQUENCE Time_sequence
+  MINVALUE 1
+  MAXVALUE 1000000
+  START WITH 1
+  INCREMENT BY 1;
+  ```
+  To populate the Time_dim table, the first step is to create a view to union data of admission_date columns from two tables: NYR_ADMISSION and WYR_Reservation.
+
+  After that, month and year are extracted from admission_date and insert directly into Time_dim table.
+  ```
+  DROP VIEW Time_view;
+  CREATE VIEW Time_view as
+  SELECT admission_date FROM NYR_ADMISSION
+  UNION
+  SELECT admission_date FROM WYR_Reservation;
+
+  --Extract month and year from union data into time_dim
+  INSERT INTO time_dim (time_id, the_year, the_month)
+  SELECT 
+    Time_sequence.NEXTVAL AS time_id_sequence,
+    EXTRACT(YEAR FROM admission_date),
+    EXTRACT(MONTH FROM admission_date)
+  FROM Time_view;
+
+  ```
+
+  
+- Ward_dim table:
+- Care_centre_dim table:
+- Bed_occupancy_fact table:
