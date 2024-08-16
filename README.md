@@ -32,11 +32,11 @@ In the previous section, reports to support objectives of North and West Yorkshi
 
 ![image](https://github.com/user-attachments/assets/9149d9ff-2a57-4e98-befe-6f0be711cb02)
 
-**Surrogate keys:**
+- **Surrogate keys:**
 
 In the star schema, the sequence (care_centre_id_sq and ward_id_sq) are used as surrogate keys instead of the natural keys (care_centre_id and ward_id). The reason for this is that in two datasets for care_centre (NYR and WYR), the care_centre_id (primary key in NYR_care_centre table) and care_id (primary key in WYR_care_centre table) are not unique. 
 
-**Slowly changing dimension type 2:**
+- **Slowly changing dimension type 2:**
 
 Moreover, applying the SCD type 2 may require more than one row for a subject such as one ward or one care centre. However, it is the requirement that there is an identifier to maintain the uniqueness among all the records which ward_id or care_centre_id cannot meet. 
 
