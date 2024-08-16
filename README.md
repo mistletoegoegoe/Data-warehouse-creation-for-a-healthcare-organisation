@@ -1,4 +1,4 @@
-# Data_warehouse_creation_for_a_healthcare_organisation
+# Data_warehouse
 ## I. Star schema design
 ### 1. Case study
 North and West Yorkshire CCG is seeking a health and social care system that integrates data from care homes and social care services. Leeds City Council operates six care homes providing extended support for elderly patients. 
