@@ -226,6 +226,7 @@ END;
   ```
   
 - Ward_dim table:
+  
   Surrogate key: 
 
   The Ward_dim table is extracted from the NYR_ward table and WYR_Ward table. For these two sources, primary key for each table has the same format and value. As a result, when combining them into the dimension table, the primary keys are repeated, thus they cannot be used as identifiers. That means it is mandatory to create a new identifier.
@@ -277,6 +278,7 @@ END;
     UPDATE SET
       w.end_date = ws.update_date
       WHERE  w.ward_name != ws.prf_ward_name ;
+  
   - Trigger to automatically insert new record into Ward_dim after updating in Staging area table => Insert updated record in this step
 
   DROP TRIGGER Insert_Ward_Dim_After_SCD;
@@ -291,6 +293,126 @@ END;
   end;
   /
   ```
-
 - Care_centre_dim table:
+  
+  To populate care_centre_dim table, the similar approach and code are applied.
+  
 - Bed_occupancy_fact table:
+  
+**Surrogate key**
+  
+  The fact table contains primary keys from dimension tables, and all of them together can be used as composite keys for this table. However, to reduce the complexity, one surrogate key is created to play as the primary key for the fact table.
+
+  That key is generated through sequence. The code to do that: 
+```
+DROP SEQUENCE Fact_sequence;
+CREATE SEQUENCE Fact_sequence
+MINVALUE 1
+MAXVALUE 1000000
+START WITH 1
+INCREMENT BY 1;
+```
+**How to populate Fact table**
+
+The fact table is populated by joining the time_dim, ward_dim and care_centre_dim. However, for those dimension tables, it is difficult to directly implement the join statement because there are no columns which can be used in join conditions when all three of them join at one time. 
+
+Thus, it is necessary to have  an intermediate table that contains columns which can simultaneously join three dimension tables.  
+
+```
+-- Creating table to join data 
+DROP TABLE bed_data;
+CREATE TABLE Bed_data as 
+    Select
+      EXTRACT(MONTH FROM admission_date) AS the_month,
+      EXTRACT(YEAR FROM admission_date) AS the_year,
+      NYR_WARD.prf_ward_name AS prf_ward_name,
+      NYR_Care_Centre.prf_care_name AS prf_care_name,
+      NYR_BED.bed_id,
+      NYR_BED.bed_status
+    FROM
+      NYR_ADMISSION
+      JOIN NYR_BED ON NYR_ADMISSION.bed_id = NYR_BED.bed_id
+      JOIN NYR_WARD ON NYR_BED.ward_id = NYR_WARD.ward_id
+      JOIN NYR_CARE_CENTRE ON NYR_CARE_CENTRE.care_centre_id = NYR_WARD.care_centre_id
+    GROUP BY
+      EXTRACT(MONTH FROM admission_date),
+      EXTRACT(YEAR FROM admission_date),
+      NYR_WARD.prf_ward_name,
+      NYR_Care_Centre.prf_care_name,
+      NYR_BED.bed_id,
+      NYR_BED.bed_status
+    UNION
+    SELECT
+      EXTRACT(MONTH FROM admission_date) AS the_month,
+      EXTRACT(YEAR FROM admission_date) AS the_year,
+      WYR_WARD.prf_ward_name AS prf_ward_name,
+      WYR_Care_Centre.prf_care_name AS prf_care_name,
+      WYR_Bed.bed_no,
+      WYR_Bed.bed_status
+
+    FROM
+      WYR_Reservation
+      JOIN WYR_BedAssigned ON WYR_Reservation.reservation_id = WYR_BedAssigned.reservation_id
+      JOIN WYR_Bed ON WYR_BedAssigned.bed_no = WYR_Bed.bed_no
+      JOIN WYR_WARD ON WYR_Bed.ward_no = WYR_WARD.ward_no
+      JOIN WYR_CARE_CENTRE ON WYR_CARE_CENTRE.CARE_ID = WYR_WARD.CARE_ID
+    GROUP BY
+      EXTRACT(MONTH FROM admission_date),
+      EXTRACT(YEAR FROM admission_date),
+      WYR_WARD.prf_ward_name,
+      WYR_Care_Centre.prf_care_name,
+      WYR_Bed.bed_no,
+      WYR_Bed.bed_status;
+
+```
+
+```
+--Creating table to join dimension tables and add aggregate functions (to calculate measures)
+
+DROP TABLE Tmp_fact;
+CREATE TABLE Tmp_fact AS
+        SELECT
+         bed_data.the_month,
+         bed_data.the_year,
+         SUM(CASE WHEN bed_data.bed_status = 'Not Occupied' 
+THEN 1 ELSE 0 END) AS no_available_beds,
+         SUM(CASE WHEN bed_data.bed_status = 'Occupied' 
+THEN 1 ELSE 0 END) AS no_occupied_beds,
+         CASE WHEN COUNT(*) = 0 THEN 0 ELSE 
+(SUM(CASE WHEN bed_data.bed_status = 'Occupied'
+THEN 1ELSE 0 END) / COUNT(*)) * 100
+         END AS 
+bed_occupancy_rate,
+            	time_dim.time_id,
+             ward_dim.WARD_ID_SQ AS ward_id,
+             care_centre_dim.CARE_CENTRE_ID_SQ AS care_centre_id
+        FROM bed_data
+        LEFT JOIN time_dim 
+on bed_data.the_month=time_dim.the_month 
+and bed_data.the_year = time_dim.the_year
+        LEFT JOIN ward_dim 
+on ward_dim.ward_name = bed_data.prf_ward_name
+        LEFT JOIN care_centre_dim 
+on care_centre_dim.care_centre_name = bed_data.prf_care_name
+        GROUP BY
+        bed_data.the_month,
+        bed_data.the_year,
+        time_dim.time_id,
+        ward_dim.ward_id_sq,
+        care_centre_dim.care_centre_id_sq;
+```
+
+```
+-- Populating fact table
+insert into bed_occupancy_fact
+select 
+        Fact_sequence.nextval,
+        no_available_beds,
+        no_occupied_beds,
+        bed_occupancy_rate,
+        time_id,
+        ward_id, 
+        care_centre_id
+from Tmp_fact;
+
+```
