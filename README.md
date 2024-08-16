@@ -82,6 +82,7 @@ To deal perfectly with this issue, the process of Extract, transform and load (E
 In this step, 4 tables in the star schema will be implemented using the tool of SQL Oracle Apex. The code to do that can be seen below: 
 
 ```
+--- Create Fact table ---
 CREATE TABLE Bed_occupancy_Fact(
 	Serial_no	INTEGER NOT NULL,
 	AVG_available_bed	REAL NOT NULL,
@@ -93,6 +94,56 @@ CREATE TABLE Bed_occupancy_Fact(
 
 	CONSTRAINT	pk_Bed_occupancy_Fact PRIMARY KEY (Serial_no)
 );
+
+```
+```
+-- Create a Database table to represent the "Time_Dim" entity.
+CREATE TABLE Time_Dim(
+	Time_id	 INTEGER NOT NULL,
+	the_year	INTEGER NOT NULL,
+	the_month	INTEGER NOT NULL,
+	-- Specify the PRIMARY KEY constraint for table "Time_Dim".
+	-- This indicates which attribute(s) uniquely identify each row of data.
+	CONSTRAINT	pk_Time_Dim PRIMARY KEY (Time_id)
+);
+```
+
+```
+-- Create a Database table to represent the "Care_centre_Dim" entity.
+CREATE TABLE Care_centre_Dim(
+	Care_centre_id_sq	INTEGER NOT NULL,
+        Care_centre_id          INTEGER NOT NULL,
+	Care_centre_name	VARCHAR(20) NOT NULL,
+        effective_date          DATE NOT NULL,
+        end_date                DATE,
+	-- Specify the PRIMARY KEY constraint for table "Care_centre_Dim".
+	-- This indicates which attribute(s) uniquely identify each row of data.
+	CONSTRAINT	pk_Care_centre_Dim PRIMARY KEY (Care_centre_id_sq)
+);
+```
+```
+-- Create a Database table to represent the "Ward_Dim" entity.
+CREATE TABLE Ward_Dim(
+	Ward_id_sq	INTEGER NOT NULL,
+        Ward_id         INTEGER NOT NULL,
+	Care_centre_id	INTEGER NOT NULL,
+	Ward_name	VARCHAR(20) NOT NULL,
+        effective_date  DATE NOT NULL,
+        end_date        DATE,
+	-- Specify the PRIMARY KEY constraint for table "Ward_Dim".
+	-- This indicates which attribute(s) uniquely identify each row of data.
+	CONSTRAINT	pk_Ward_Dim PRIMARY KEY (Ward_id_sq)
+);
+```
+```
+-- Alter Tables to add fk (foreign key) constraints --
+ALTER TABLE Bed_occupancy_Fact ADD CONSTRAINT fk1_Bed_occupancy_Fact_to_Time_Dim FOREIGN KEY(fk1_Time_id) REFERENCES Time_Dim(Time_id) on delete cascade ;
+
+-- Alter table to add new constraints required to implement the "Bed_occupancy_Fact_Ward_Dim" relationship
+ALTER TABLE Bed_occupancy_Fact ADD CONSTRAINT fk2_Bed_occupancy_Fact_to_Ward_Dim FOREIGN KEY(fk2_Ward_id_sq) REFERENCES Ward_Dim(Ward_id_sq) on delete cascade;
+
+-- Alter table to add new constraints required to implement the "Bed_occupancy_Fact_Care_centre_Dim" relationship
+ALTER TABLE Bed_occupancy_Fact ADD CONSTRAINT fk3_Bed_occupancy_Fact_to_Care_centre_Dim FOREIGN KEY(fk3_Care_centre_id_sq) REFERENCES Care_centre_Dim(Care_centre_id_sq) on delete cascade;
 
 ```
 ### 2. Staging area and data warehouse population
