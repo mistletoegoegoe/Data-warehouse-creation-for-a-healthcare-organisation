@@ -9,7 +9,9 @@ Due to the case study, some requirements and characteristics of integrated data 
 -	The durability of data system is important, as this is a long-term project which will last many years and update continuously.
 
 The dataset includes the tables below: 
-a. For North Yorkshire
+
+#### a. For North Yorkshire
+
 - NYR_PATIENT
 - NYR_CARE_CENTRE
 - NYR_WARD
@@ -17,7 +19,8 @@ a. For North Yorkshire
 - NYR_STAFF
 - NYR_ADMISSION
 
-b. For West Yorkshire
+#### b. For West Yorkshire
+
 - WYR_Employee
 - WYR_Doctor
 - WYR_Nurse
