@@ -68,19 +68,12 @@ Bed_occupancy_Fact table:
 
 
 ### 5. Extract, Transform and Load process
-After identifying 3 necessary dimension tables that links to one fact table as star scheme design above, the next issue is how to extract data from original dataset and load them into dim table and then populate fact table. 
+After identifying 3 necessary dimension tables that links to one fact table as star scheme design above, the next issue is how to extract data from original dataset and load them into dim table and then populate fact table.
 
 To deal perfectly with this issue, the process of Extract, transform and load (ETL) is applied to not only extract the required data from original dataset and load them into dimension tables but also includes some steps to clean and transform raw data to ensure the data integrity, quality and consistency in format between data in two original table (WYR and NYR). 
 
-The process of ETL is demonstrated in the following diagram:
+<img width="626" alt="image" src="https://github.com/user-attachments/assets/69f7d334-5321-411e-aebe-d24759a911ed">
 
-![image](https://github.com/user-attachments/assets/e8dd9975-be03-4b19-aaa4-dd11ee50ecff)
-
-Specifically, ETL process can be applied in this case study by following steps:
-- Identifying necessary data from both datasets (NYR, WYR) 
-- Transforming those data into a consistent format
-- Load data into dimension tables
-  
 The whole detailed process are demonstrated in the table below:
 <img width="704" alt="image" src="https://github.com/user-attachments/assets/5bc1a2dc-1931-4e09-913a-c7fc6184cfda">
 
@@ -90,6 +83,7 @@ The whole detailed process are demonstrated in the table below:
 
 ## II. Star schema implementation
 ### 1. Star schema implementation
+
 ### 2. Staging area
 #### a. Data cleaning
 #### b. Data transforming
