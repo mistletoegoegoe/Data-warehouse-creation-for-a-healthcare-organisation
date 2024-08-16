@@ -148,5 +148,11 @@ ALTER TABLE Bed_occupancy_Fact ADD CONSTRAINT fk3_Bed_occupancy_Fact_to_Care_cen
 ```
 ### 2. Staging area and data warehouse population
 #### a. Data cleaning
+In the datasets, there are some issues that may implement the data pre-processing to clean it: 
+
+<img width="413" alt="image" src="https://github.com/user-attachments/assets/93e327f6-7f2c-44b8-98c9-0e08255f7590">
+
+
+
 #### b. Data transforming
 #### c. Data loading into star schema (integrating Slow changing dimension type 2)
