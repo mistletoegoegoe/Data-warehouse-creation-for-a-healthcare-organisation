@@ -79,8 +79,23 @@ To deal perfectly with this issue, the process of Extract, transform and load (E
 
 ## II. Star schema implementation
 ### 1. Star schema implementation
+In this step, 4 tables in the star schema will be implemented using the tool of SQL Oracle Apex. The code to do that can be seen below: 
 
-### 2. Staging area
+```
+CREATE TABLE Bed_occupancy_Fact(
+	Serial_no	INTEGER NOT NULL,
+	AVG_available_bed	REAL NOT NULL,
+	AVG_occupied_bed	REAL NOT NULL,
+	Occupancy_rate	REAL NOT NULL,
+	fk1_Time_id	INTEGER NOT NULL,
+	fk2_Ward_id_sq	INTEGER NOT NULL,
+	fk3_Care_centre_id_sq	INTEGER NOT NULL,
+
+	CONSTRAINT	pk_Bed_occupancy_Fact PRIMARY KEY (Serial_no)
+);
+
+```
+### 2. Staging area and data warehouse population
 #### a. Data cleaning
 #### b. Data transforming
 #### c. Data loading into star schema (integrating Slow changing dimension type 2)
