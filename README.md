@@ -77,8 +77,16 @@ The process of ETL is demonstrated in the following diagram:
 ![image](https://github.com/user-attachments/assets/e8dd9975-be03-4b19-aaa4-dd11ee50ecff)
 
 Specifically, ETL process can be applied in this case study by following steps:
-- Extracting necessary columns from both datasets (NYR, WYR)
-- 
+- Identifying necessary data from both datasets (NYR, WYR) 
+- Transforming those data into a consistent format
+- Load data into dimension tables
+  
+The whole detailed process are demonstrated in the table below:
+<img width="704" alt="image" src="https://github.com/user-attachments/assets/5bc1a2dc-1931-4e09-913a-c7fc6184cfda">
+
+<img width="703" alt="image" src="https://github.com/user-attachments/assets/89e6c56e-0c77-451c-9160-59bc981d7802">
+
+<img width="704" alt="image" src="https://github.com/user-attachments/assets/76460c8a-af05-49a5-a49f-60506f21a47d">
 
 ## II. Star schema implementation
 ### 1. Star schema implementation
